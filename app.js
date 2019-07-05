@@ -6,6 +6,8 @@ let app = express();
 
 let bodyParser = require('body-parser');
 
+let session  = require('express-session');
+
 let router = require('./router');
 
 // 将public和node_modules文件夹开放出来
@@ -22,6 +24,20 @@ app.set('views',path.join(__dirname,'./views')); // 默认就是 .views 目录
 // 配置body-parser(一定要放在挂载路由之前) [配置解析表单POST请求体插件]
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
+
+// 在 Express 框架中,默认不支持 Session 和 Cookie, 但是我们可以使用第三方中间件: express-session 来解决
+/**
+ * 1. 安装 npm install express-session
+ * 2. 配置 (一定要在挂载路由之前)
+ * 3. 使用
+ *   当把这个插件配置好之后,我们就可以通过 req.session 来访问和设置 Session 成员( 添加Session数据: req.session.foo = 'bar', 访问Session数据: req.session.foo)
+ */
+app.use(session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true
+}))
+
 
 // 把路由挂载到app中
 app.use(router);

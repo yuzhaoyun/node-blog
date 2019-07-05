@@ -4,7 +4,10 @@ let router = express.Router();
 
 let User = require('./models/user');
 
+let md5 = require('blueimp-md5');
+
 router.get('/',function(req,res){
+    console.log(req.session.islogin);
     res.render('index.html');
 });
 
@@ -31,12 +34,13 @@ router.post('/register',function(req,res){
      */
     let body = req.body;
     User.findOne({
-        $or:[{
-            email:body.email},
-            {nickName: body.nickName}
+        $or:[
+            {email:body.email},
+            {nickname: body.nickname}
         ]
     },function(err,data){
         if(err){
+            console.log(err)
             return res.status(500).json({
                 success: false,
                 message: "服务端错误"
@@ -49,25 +53,28 @@ router.post('/register',function(req,res){
             console.log(data);
             // 邮箱或者昵称已存在
             return res.status(200).json({
-                success: true,
-                message: "邮箱或者昵称已存在"
+                err_code: 1,
+                message: "email or nickname aleady exists ."
             });
         }
-
+        // 对密码进行 md5 重复加密
+        body.password = md5(md5(body.password));
+        
         new User(body).save(function(err,user){
-            console.log(body);
             if(err){
                 return res.status(500).json({
-                    success:false,
-                    message: "服务端错误"
+                    err_code: 500,
+                    message: "Internal error ."
                 })
             }
-            // console.log('ok');
+            // 注册成功,使用 Session 记录用户的登陆状态
+            req.session.islogin = true;
+
             // Express 提供了一个相应方法: json
             // 该方法接收一个对象作为参数,它会自动帮你把对象转为字符串发送到浏览器
             res.status(200).json({
-                success: true,
-                message: 'ok'
+                err_code: 0,
+                message: 'OK'
             });
         });
 

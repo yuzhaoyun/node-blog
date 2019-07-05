@@ -1,7 +1,7 @@
 let mongoose = require('mongoose');
 
 // 链接数据库
-mongoose.connect('mongodb://localhost/itcast', { useMongoClient: true })
+mongoose.connect('mongodb://localhost:27017/blog', { useMongoClient: true })
 
 let Schema = mongoose.Schema;
 
@@ -10,7 +10,7 @@ let userSchema = new Schema({
         type: String,
         required: true
     },
-    nickName: {
+    nickname: {
         type: String,
         required: true
     },
