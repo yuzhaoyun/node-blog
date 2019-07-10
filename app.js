@@ -32,10 +32,13 @@ app.use(bodyParser.json());
  * 3. 使用
  *   当把这个插件配置好之后,我们就可以通过 req.session 来访问和设置 Session 成员( 添加Session数据: req.session.foo = 'bar', 访问Session数据: req.session.foo)
  */
+/**
+ * 默认Session 数据是内存存储的,服务器一旦重启就会丢失,真正的生产环境会把 Session 进行持久化存储
+ */
 app.use(session({
-    secret: 'itcast',
+    secret: 'itcast', // 配置加密字符串,它会在原有加密基础之上和这个字符串拼起来去加密 (增加安全性能,防止客户端恶意伪造)
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: false  // (为true时)无论你是否使用 Session ,我都默认直接给你分配一把钥匙
 }))
 
 // 把路由挂载到app中
