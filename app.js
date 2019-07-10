@@ -33,11 +33,10 @@ app.use(bodyParser.json());
  *   当把这个插件配置好之后,我们就可以通过 req.session 来访问和设置 Session 成员( 添加Session数据: req.session.foo = 'bar', 访问Session数据: req.session.foo)
  */
 app.use(session({
-    secret: 'keyboard cat',
+    secret: 'itcast',
     resave: false,
     saveUninitialized: true
 }))
-
 
 // 把路由挂载到app中
 app.use(router);
